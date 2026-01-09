@@ -42,3 +42,4 @@ Jednoduché UI určené pro práci na školním PC (přehlednost před designem)
 - GET /active-loans = Stránka „Výpůjčky“ s možností zadat čtenáře a knihu, přehled aktuálních výpůjček.
 
 
+# fictional-library-mongo
