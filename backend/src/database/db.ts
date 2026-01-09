@@ -5,19 +5,19 @@ import { Administrator, Reader, Book, Loan } from '../types/databaseTypes';
 const MONGODB_URL = process.env.MONGO_URL || 'mongodb://localhost:27017';
 const DATABASE_NAME = process.env.DATABASE_NAME || 'library_db';
 
-let client: MongoClient;
-let db: Db;
+let client: MongoClient | null = null;
+let db: Db | null = null;
 
-// Collections with type enforcement
-let administrators: Collection<Administrator>;
-let readers: Collection<Reader>;
-let books: Collection<Book>;
-let loans: Collection<Loan>;
-
+let administrators: Collection<Administrator> | null = null;
+let readers: Collection<Reader> | null = null;
+let books: Collection<Book> | null = null;
+let loans: Collection<Loan> | null = null;
 /**
  * Connect to MongoDB and initialize collections
  */
 export const connectDB = async (): Promise<void> => {
+    if (client) return; // Already connected
+
     try {
         client = new MongoClient(MONGODB_URL);
         await client.connect();
@@ -44,25 +44,21 @@ export const connectDB = async (): Promise<void> => {
  * Setup indexes for collections
  */
 const setupIndexes = async (): Promise<void> => {
-    try {
-        // Create unique index for library card numbers
-        await readers.createIndex({ libraryCardNumber: 1 }, { unique: true });
+    if (!readers || !books || !loans) return;
+    // Create unique index for library card numbers
+    await readers.createIndex({ libraryCardNumber: 1 }, { unique: true });
 
-        // Create index for book titles and authors for faster search
-        await books.createIndex({ title: 1 });
-        await books.createIndex({ author: 1 });
+    // Create index for book titles and authors for faster search
+    await books.createIndex({ title: 1 });
+    await books.createIndex({ author: 1 });
 
-        // Create indexes for loan queries
-        await loans.createIndex({ readerId: 1 });
-        await loans.createIndex({ bookId: 1 });
-        await loans.createIndex({ borrowedAt: 1 });
-        await loans.createIndex({ dueDate: 1 });
-        await loans.createIndex({ returnedAt: 1 });
+    // Create indexes for loan queries
+    await loans.createIndex({ readerId: 1 });
+    await loans.createIndex({ bookId: 1 });
+    await loans.createIndex({ borrowedAt: 1 });
+    await loans.createIndex({ dueDate: 1 });
+    await loans.createIndex({ returnedAt: 1 });
 
-        console.log('Database indexes created successfully');
-    } catch (error) {
-        console.error('Error creating database indexes:', error);
-    }
 };
 
 /**
@@ -71,6 +67,8 @@ const setupIndexes = async (): Promise<void> => {
 export const closeDB = async (): Promise<void> => {
     if (client) {
         await client.close();
+        client = null;
+        db = null;
         console.log('MongoDB connection closed');
     }
 };
