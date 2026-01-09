@@ -5,7 +5,6 @@
 sdsd
 
 ## MongoDB requirements
-
 ### MongoDB
 
 - Databáze např. library_db s kolekcemi books, readers, loans.
