@@ -15,7 +15,7 @@ sdsd
 
 ### Context
 
-Each endpoint is protected by authentication cookie.
+Each endpoint is protected by authorization cookie.
 Each endpoint can return these status codes on failure unless stated otherwise:
 
 - 401(Unauthenticated)
