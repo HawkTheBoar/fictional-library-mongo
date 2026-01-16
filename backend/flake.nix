@@ -53,6 +53,7 @@
             echo "- Node.js: $(node --version)"
             echo "- npm: $(npm --version)"
             echo "- TypeScript: $(tsc --version)"
+            alias vibe="qwen --yolo"
             # echo "- ESLint: $(eslint --version)"
             # echo "- Prettier: $(prettier --version)"
             echo ""
